@@ -1,6 +1,17 @@
 import React from 'react';
-import { Container, Col, Row, Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
-// import axios from 'axios';
+import {
+    Container,
+    Col,
+    Row,
+    Button,
+    Form,
+    FormGroup,
+    Label,
+    Input,
+    Alert,
+    FormFeedback
+} from 'reactstrap';
+import axios from 'axios';
 import LoadingScreen from 'react-loading-screen'
 import logo from './index/logo.png'
 import trim from 'trim';
@@ -8,112 +19,122 @@ class Regismember extends React.Component {
 
     addContent = (e) => {
         e.preventDefault();
-        var name = e.target.name.value;
-        var lname = e.target.lname.value;
-        var email = e.target.email.value;
+        let dbCon = this.props.db.database().ref('/member');
+        let name = e.target.name.value;
+        let lname = e.target.name.value;
+        let email = e.target.email.value;
 
-        console.log(lname)
-        var config = {
-            headers: { 'Access-Control-Allow-Origin': '*' }
-        };
 
-        var url = 'http://127.0.0.1:5000/train/' + name;
-        this.setState({
-            status: 2
-        });
+        if (this.state.validated.name === 'valid' &&
+            this.state.validated.lname === 'valid' &&
+            this.state.validated.email === 'valid') {
 
-        // axios.post(url, config)
-        //     .then(res => {
-        //         console.log(res);
-        //         this.setState({
-        //             status: 1,
-        //             visible: true
-        //         });
-        //     })
+            var config = {
+                headers: { 'Access-Control-Allow-Origin': '*' }
+            };
+
+            var url = 'http://127.0.0.1:5000/train/' + name;
+            this.setState({
+                status: 2
+            });
+
+            
+            dbCon.push({
+                name: trim(name),
+                lname: trim(lname),
+                email:email
+              });
+            // axios.post(url, config)
+            //     .then(res => {
+            //         console.log(res);
+            //         this.setState({
+            //             status: 1,
+            //             visible: true
+            //         });
+            //     })
+
+        }else{
+            console.log("sadad")
+        }
 
     }
     constructor(props) {
         super(props);
-        this.name = React.createRef();
         this.handleChange = this.handleChange.bind(this);
-        this.onFocus = this.onFocus.bind(this);
+        this.onBlur = this.onBlur.bind(this);
+        this.addContent = this.addContent.bind(this);
+        
     }
 
-    validate(name, lname, email) {
-        if (trim(name) === '') {
-            this.setState({
-                validat_name: 'invalid'
-            })
-        }
-    }
+
 
     handleChange(event) {
-        var value = event.target.value
-        var name = event.target.name
-
-        if (trim(value) === '') {
-            if (name === 'name') {
-                this.setState({
-                    validate_name: 'invalid'
-                })
-            }
-            else if (name === 'lname') {
-
-                this.setState({
-                    validate_lname: 'invalid'
-                })
-            }
+        
+        let value = event.target.value;
+        let name = event.target.name;
+        let errorMessage = { ...this.state.errorMessage };
+        let validated = { ...this.state.validated }
+        switch (name) {
+            case 'name':
+                errorMessage.name =
+                    value.length < 3 ? "minimum 3 characaters required" : "";
+                validated.name =
+                    value.length < 3 ? "invalid" : "valid";
+                break;
+            case 'lname':
+                errorMessage.lname =
+                    value.length < 3 ? "minimum 3 characaters required" : "";
+                validated.lname =
+                    value.length < 3 ? "invalid" : "valid";
+                break;
+            case 'email':
+                errorMessage.email =
+                    value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i) ? "" : "invalid email address";
+                validated.email =
+                    value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i) ? "valid" : "invalid";
+                break;
+            default:
+                break;
         }
 
-
-        else {
-            if (name === 'name') {
-                this.setState({
-                    validate_name: 'valid'
-                })
-            }
-            else if (name === 'lname') {
-
-                this.setState({
-                    validate_lname: 'valid'
-                })
-            }
-        }
-
+        this.setState({
+            errorMessage: errorMessage,
+            validated: validated
+        });
     }
 
-    onFocus(event) {
-        var value = event.target.value
-        var name = event.target.name
-
-        if (trim(value) === '') {
-            if (name === 'name') {
-                this.setState({
-                    validate_name: 'invalid'
-                })
-            }
-            else if (name === 'lname') {
-
-                this.setState({
-                    validate_lname: 'invalid'
-                })
-            }
+    onBlur(event) {
+        let value = event.target.value;
+        let name = event.target.name;
+        let errorMessage = { ...this.state.errorMessage };
+        let validated = { ...this.state.validated }
+        switch (name) {
+            case 'name':
+                errorMessage.name =
+                    value.length <= 0 ? "Name can't be blank" : "";
+                validated.name =
+                    value.length <= 0 ? "invalid" : "valid";
+                break;
+            case 'lname':
+                errorMessage.lname =
+                    value.length <= 0 ? "Lastname can't be blank" : "";
+                validated.lname =
+                    value.length <= 0 ? "invalid" : "valid";
+                break;
+            case 'email':
+                errorMessage.email =
+                    value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i) ? "" : "invalid email address";
+                validated.email =
+                    value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i) ? "valid" : "invalid";
+                break;
+            default:
+                break;
         }
 
-
-        else {
-            if (name === 'name') {
-                this.setState({
-                    validate_name: 'valid'
-                })
-            }
-            else if (name === 'llname') {
-
-                this.setState({
-                    validate_lname: 'valid'
-                })
-            }
-        }
+        this.setState({
+            errorMessage: errorMessage,
+            validated: validated
+        });
 
     }
 
@@ -122,8 +143,16 @@ class Regismember extends React.Component {
         this.setState({
             status: 1,
             visible: false,
-            validate_name: '',
-            validate_lname: ''
+            validated: {
+                name: "",
+                lname: "",
+                email: ""
+            },
+            errorMessage: {
+                name: "",
+                lname: "",
+                email: ""
+            }
 
         });
     }
@@ -143,19 +172,45 @@ class Regismember extends React.Component {
                             <Col md={4}>
                                 <FormGroup>
                                     <Label for="name">Name</Label>
-                                    <Input valid={this.state.validate_name === 'valid'} invalid={this.state.validate_name === 'invalid'} type="text" name='name' placeholder="Name" onChange={this.handleChange} onFocus={this.onFocus} />
+                                    <Input
+                                        valid={this.state.validated.name === 'valid'}
+                                        invalid={this.state.validated.name === 'invalid'}
+                                        type="text"
+                                        name='name'
+                                        placeholder="Name"
+                                        onChange={this.handleChange}
+                                        onBlur={this.onBlur} />
+                                    <FormFeedback>{this.state.errorMessage.name}</FormFeedback>
+
                                 </FormGroup>
                             </Col>
                             <Col md={4}>
                                 <FormGroup>
                                     <Label for="lname">LastName</Label>
-                                    <Input valid={this.state.validate_lname === 'valid'} invalid={this.state.validate_lname === 'invalid'} name='lname' type="text" placeholder="LastName" onFocus={this.onFocus} onChange={this.handleChange} />
+                                    <Input
+                                        valid={this.state.validated.lname === 'valid'}
+                                        invalid={this.state.validated.lname === 'invalid'}
+                                        name='lname'
+                                        type="text"
+                                        placeholder="LastName"
+                                        onBlur={this.onBlur}
+                                        onChange={this.handleChange} />
+                                    <FormFeedback>{this.state.errorMessage.lname}</FormFeedback>
                                 </FormGroup>
+
                             </Col>
                             <Col md={4}>
                                 <FormGroup>
                                     <Label for="lname">Email</Label>
-                                    <Input name='email' type="email" placeholder="email@example.com" />
+                                    <Input
+                                        valid={this.state.validated.email === 'valid'}
+                                        invalid={this.state.validated.email === 'invalid'}
+                                        name='email'
+                                        type="email"
+                                        placeholder="email@example.com"
+                                        onChange={this.handleChange}
+                                        onBlur={this.onBlur} />
+                                    <FormFeedback>{this.state.errorMessage.email}</FormFeedback>
                                 </FormGroup>
                             </Col>
                         </Row>

@@ -3,7 +3,9 @@ import React, { Component } from 'react';
 import './index.css'
 
 import Regismember from '../Regismember';
-import firebase from 'firebase/app';
+import MemberList from '../MemberList';
+import { Route } from 'react-router-dom'
+import firebase from 'firebase';
 class App extends Component {
 
   constructor(props) {
@@ -18,12 +20,14 @@ class App extends Component {
     };
     firebase.initializeApp(config);
   }
+
   render() {
     return (
-      <div id='form' className="regisform">
-        <Regismember/>
-        
+      <div>
+        <Route exact path="/" render={(props) => <Regismember {...props} db={firebase} />} />
+        <Route exact path="/test" render={(props) => <MemberList {...props} db={firebase} />} />
       </div>
+
     );
   }
 }
