@@ -34,16 +34,37 @@ class Regismember extends React.Component {
             };
 
             var url = 'http://127.0.0.1:5000/train/' + name;
-            this.setState({
-                status: 2
-            });
+            // this.setState({
+            //     status: 2
+            // });
 
-            
+
             dbCon.push({
                 name: trim(name),
                 lname: trim(lname),
-                email:email
-              });
+                email: email
+            });
+
+            this.setState({
+                status: 1,
+                visible: true,
+                validated: {
+                    name: "",
+                    lname: "",
+                    email: ""
+                },
+                errorMessage: {
+                    name: "",
+                    lname: "",
+                    email: ""
+                },
+                value: {
+                    name: "",
+                    lname: "",
+                    email: ""
+                }
+    
+            });
             // axios.post(url, config)
             //     .then(res => {
             //         console.log(res);
@@ -53,45 +74,66 @@ class Regismember extends React.Component {
             //         });
             //     })
 
-        }else{
-            console.log("sadad")
+        } else {
+            let validated = { ...this.state.validated }
+            let errorMessage = { ...this.state.errorMessage };
+            errorMessage.name =
+                name.length < 3 ? "minimum 3 characaters required" : "";
+            validated.name =
+                name.length < 3 ? "invalid" : "valid";
+            errorMessage.lname =
+                lname.length < 3 ? "minimum 3 characaters required" : "";
+            validated.lname =
+                lname.length < 3 ? "invalid" : "valid";
+            errorMessage.email =
+                email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i) ? "" : "invalid email address";
+            validated.email =
+                email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i) ? "valid" : "invalid";
+
+            this.setState({
+                errorMessage: errorMessage,
+                validated: validated
+            });
         }
 
     }
     constructor(props) {
         super(props);
         this.handleChange = this.handleChange.bind(this);
-        this.onBlur = this.onBlur.bind(this);
         this.addContent = this.addContent.bind(this);
-        
+
     }
 
 
 
     handleChange(event) {
-        
+
         let value = event.target.value;
         let name = event.target.name;
         let errorMessage = { ...this.state.errorMessage };
         let validated = { ...this.state.validated }
+        let inputValue = { ...this.state.value }
         switch (name) {
             case 'name':
                 errorMessage.name =
                     value.length < 3 ? "minimum 3 characaters required" : "";
                 validated.name =
                     value.length < 3 ? "invalid" : "valid";
+                inputValue.name = value;
                 break;
             case 'lname':
                 errorMessage.lname =
                     value.length < 3 ? "minimum 3 characaters required" : "";
                 validated.lname =
                     value.length < 3 ? "invalid" : "valid";
+                inputValue.lname = value;
                 break;
             case 'email':
                 errorMessage.email =
                     value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i) ? "" : "invalid email address";
                 validated.email =
                     value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i) ? "valid" : "invalid";
+                inputValue.email = value;
                 break;
             default:
                 break;
@@ -99,44 +141,14 @@ class Regismember extends React.Component {
 
         this.setState({
             errorMessage: errorMessage,
-            validated: validated
-        });
-    }
-
-    onBlur(event) {
-        let value = event.target.value;
-        let name = event.target.name;
-        let errorMessage = { ...this.state.errorMessage };
-        let validated = { ...this.state.validated }
-        switch (name) {
-            case 'name':
-                errorMessage.name =
-                    value.length <= 0 ? "Name can't be blank" : "";
-                validated.name =
-                    value.length <= 0 ? "invalid" : "valid";
-                break;
-            case 'lname':
-                errorMessage.lname =
-                    value.length <= 0 ? "Lastname can't be blank" : "";
-                validated.lname =
-                    value.length <= 0 ? "invalid" : "valid";
-                break;
-            case 'email':
-                errorMessage.email =
-                    value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i) ? "" : "invalid email address";
-                validated.email =
-                    value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i) ? "valid" : "invalid";
-                break;
-            default:
-                break;
-        }
-
-        this.setState({
-            errorMessage: errorMessage,
-            validated: validated
+            validated: validated,
+            value:inputValue,
+            visible:false
         });
 
     }
+
+
 
 
     componentWillMount() {
@@ -149,6 +161,11 @@ class Regismember extends React.Component {
                 email: ""
             },
             errorMessage: {
+                name: "",
+                lname: "",
+                email: ""
+            },
+            value: {
                 name: "",
                 lname: "",
                 email: ""
@@ -177,9 +194,10 @@ class Regismember extends React.Component {
                                         invalid={this.state.validated.name === 'invalid'}
                                         type="text"
                                         name='name'
+                                        value={this.state.value.name}
                                         placeholder="Name"
                                         onChange={this.handleChange}
-                                        onBlur={this.onBlur} />
+                                        onBlur={this.handleChange} />
                                     <FormFeedback>{this.state.errorMessage.name}</FormFeedback>
 
                                 </FormGroup>
@@ -192,8 +210,9 @@ class Regismember extends React.Component {
                                         invalid={this.state.validated.lname === 'invalid'}
                                         name='lname'
                                         type="text"
+                                        value={this.state.value.lname}
                                         placeholder="LastName"
-                                        onBlur={this.onBlur}
+                                        onBlur={this.handleChange}
                                         onChange={this.handleChange} />
                                     <FormFeedback>{this.state.errorMessage.lname}</FormFeedback>
                                 </FormGroup>
@@ -207,9 +226,10 @@ class Regismember extends React.Component {
                                         invalid={this.state.validated.email === 'invalid'}
                                         name='email'
                                         type="email"
+                                        value={this.state.value.email}
                                         placeholder="email@example.com"
                                         onChange={this.handleChange}
-                                        onBlur={this.onBlur} />
+                                        onBlur={this.handleChange} />
                                     <FormFeedback>{this.state.errorMessage.email}</FormFeedback>
                                 </FormGroup>
                             </Col>
