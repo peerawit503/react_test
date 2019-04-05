@@ -1,5 +1,6 @@
 import React from 'react';
 import firebase from 'firebase'
+import './navbar.css'
 import {
   Collapse,
   Navbar,
@@ -38,7 +39,7 @@ export default class Example extends React.Component {
   render() {
     if(this.props.session){
       return (
-        <div>
+        <div className="nav-bar">
           <Navbar color="light" light expand="md">
             <NavbarBrand href="/">reactstrap</NavbarBrand>
             <NavbarToggler onClick={this.toggle} />
@@ -61,7 +62,7 @@ export default class Example extends React.Component {
     }
     else{
       return (
-        <div>
+        <div className="nav-bar">
           <Navbar color="light" light expand="md">
             <NavbarBrand href="/">reactstrap</NavbarBrand>
             <NavbarToggler onClick={this.toggle} />

@@ -86,49 +86,52 @@ class App extends Component {
       )
     } else {
       return (
-        <div>
+        <div >
           <Navbar session={this.state.currentUser} />
+          <div className="container">
+            <div id="login-row" className="row justify-content-center align-items-center">
+              <div  id="login-column" className="col-md-6">
+                <div id="login-box" className="col-md-12">
+                  <form id="login-form" onSubmit={this.onSubmit}>
+                    <h3 className="text-center text-info">Login</h3>
+                    <div className="form-group">
+                      <label htmlFor="username" className="text-info">Username:</label><br />
+                      <input
+                       
+      
+                        id="email"
+                        className="form-control"
+                        type="email"
+                        name="email"
+                        onChange={this.onChange}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="username" className="text-info">Password:</label><br />
+                      <input
+                       
+                       
+                        id="password"
+                        className="form-control"
+                        type="password"
+                        name="password"
+                        onChange={this.onChange}
+                      />
+                    </div>
+                    {message ? <p className="help is-danger">{message}</p> : null}
 
-          <div className="columns is-centered">
-            <div className="column is-half">
-              <form onSubmit={this.onSubmit}>
-                <div className="field">
-                  <label className="label">Email</label>
-                  <div className="control">
-                    <input
-                      className="input"
-                      type="email"
-                      name="email"
-                      onChange={this.onChange}
-                    />
-                  </div>
+
+                    <div className="form-group">
+                      <button className="btn btn-info btn-md">Submit</button>
+                    </div>
+
+
+                  </form>
                 </div>
-
-                <div className="field">
-                  <label className="label">Password</label>
-                  <div className="control">
-                    <input
-                      className="input"
-                      type="password"
-                      name="password"
-                      onChange={this.onChange}
-                    />
-                  </div>
-                </div>
-
-                {message ? <p className="help is-danger">{message}</p> : null}
-
-                <div className="field is-grouped">
-                  <div className="control">
-                    <button className="button is-link">Submit</button>
-                  </div>
-                  <div className="control">
-                    <button className="button is-text">Cancel</button>
-                  </div>
-                </div>
-              </form>
+              </div>
             </div>
           </div>
+
         </div>
 
       );
