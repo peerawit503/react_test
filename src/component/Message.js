@@ -2,20 +2,15 @@ import React, { Component } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 
 import {
-    Container,
     Col,
     Row,
     Form,
     FormGroup,
     Label,
     Input,
-    Alert,
+
     FormFeedback
 } from 'reactstrap';
-
-var deleteBtnStyle = {
-    float: "right"
-}
 
 class Message extends Component {
     constructor(props) {
@@ -154,7 +149,7 @@ class Message extends Component {
                                 Delete
                             </button>
                             <button onClick={this.handleShow}>
-                                View
+                                Edit
                             </button>
 
 

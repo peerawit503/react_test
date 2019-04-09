@@ -1,0 +1,30 @@
+@media(min-width:1200px) {
+    .form-row2 {
+        width: 70% !important;
+        display: -webkit-flex;
+        display: flex;
+        -webkit-flex-wrap: wrap;
+        flex-wrap: wrap;
+        margin-right: auto;
+        margin-left: auto;
+    }
+}
+
+.header {
+    text-align: center;
+    padding-top: 1em;
+}
+
+.form-wrap {
+    background: rgba(0, 0, 0, 0.08);
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-bottom: 3em;
+}
+.button-submit-wrap{
+    padding-top: 1.5em;
+}
+.button-submit{
+    width: 100%;
+}

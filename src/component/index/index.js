@@ -7,6 +7,8 @@ import Navbar from '../Navbar';
 import MemberList from '../MemberList';
 import { Route } from 'react-router-dom'
 import firebase from 'firebase';
+import { withRouter } from 'react-router-dom';
+
 class App extends Component {
 
   constructor(props) {
@@ -25,17 +27,29 @@ class App extends Component {
       currentUser: null,
       message: ''
     }
+   
     firebase.initializeApp(config);
   }
-  componentDidMount() {
 
+  componentDidMount() {
     firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        this.setState({
-          currentUser: user
-        })
-      }
-    })
+    if(user){  this.setState({ 
+        isAuthenticating: true,
+        currentUser: user
+      });}
+    }, (error) => {
+      this.setState({ isAuthenticating: true });
+      // alert(error);
+    });
+  }
+  componentDidUpdate(){
+    if(this.props.location.logout){
+      this.props.location.logout = false
+      this.setState({
+        isAuthenticating:true,
+        currentUser:null
+      })
+    }
   }
 
   onChange = e => {
@@ -75,69 +89,74 @@ class App extends Component {
 
   render() {
     const { message, currentUser } = this.state
-    if (currentUser) {
+    if (this.state.isAuthenticating) {
+      if(currentUser){
       return (
 
         <div>
-          <Navbar session={this.state.currentUser} />
+          <Route path="/" render={(props) => <Navbar {...props} db={firebase} session={this.state.currentUser} />} />
           <Route exact path="/" render={(props) => <Regismember {...props} db={firebase} />} />
           <Route exact path="/memberlist" render={(props) => <MemberList {...props} db={firebase} />} />
         </div>
       )
-    } else {
-      return (
-        <div >
-          <Navbar session={this.state.currentUser} />
-          <div className="container">
-            <div id="login-row" className="row justify-content-center align-items-center">
-              <div  id="login-column" className="col-md-6">
-                <div id="login-box" className="col-md-12">
-                  <form id="login-form" onSubmit={this.onSubmit}>
-                    <h3 className="text-center text-info">Login</h3>
-                    <div className="form-group">
-                      <label htmlFor="username" className="text-info">Username:</label><br />
-                      <input
-                       
-      
-                        id="email"
-                        className="form-control"
-                        type="email"
-                        name="email"
-                        onChange={this.onChange}
-                      />
+      }else{
+        return (
+          
+            <div >
+              <Navbar session={this.state.currentUser} />
+              <div className="container">
+                <div id="login-row" className="row justify-content-center align-items-center">
+                  <div id="login-column" className="col-md-6">
+                    <div id="login-box" className="col-md-12">
+                      <form id="login-form" onSubmit={this.onSubmit}>
+                        <h3 className="text-center text-info">Login</h3>
+                        <div className="form-group">
+                          <label htmlFor="username" className="text-info">Username:</label><br />
+                          <input
+    
+    
+                            id="email"
+                            className="form-control"
+                            type="email"
+                            name="email"
+                            onChange={this.onChange}
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label htmlFor="username" className="text-info">Password:</label><br />
+                          <input
+    
+    
+                            id="password"
+                            className="form-control"
+                            type="password"
+                            name="password"
+                            onChange={this.onChange}
+                          />
+                        </div>
+                        {message ? <p className="help is-danger">{message}</p> : null}
+    
+    
+                        <div className="form-group">
+                          <button className="btn btn-info btn-md">Submit</button>
+                        </div>
+    
+    
+                      </form>
                     </div>
-                    <div className="form-group">
-                      <label htmlFor="username" className="text-info">Password:</label><br />
-                      <input
-                       
-                       
-                        id="password"
-                        className="form-control"
-                        type="password"
-                        name="password"
-                        onChange={this.onChange}
-                      />
-                    </div>
-                    {message ? <p className="help is-danger">{message}</p> : null}
-
-
-                    <div className="form-group">
-                      <button className="btn btn-info btn-md">Submit</button>
-                    </div>
-
-
-                  </form>
+                  </div>
                 </div>
               </div>
+    
             </div>
-          </div>
-
-        </div>
-
-      );
+    
+          );
+      }
+    } else {
+      return null;
     }
 
   }
 }
 
-export default App;
+export default withRouter(App);

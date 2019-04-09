@@ -8,12 +8,10 @@ class MessageList extends Component {
     this.state = {
       messages: []
     };
-    let app = this.props.db.database().ref('member');
-    app.on('value', snapshot => {
-      this.getData(snapshot.val());
-    });
+
     // console.log(this.state.messages);
   }
+
   getData(values) {
     let messagesVal = values;
     let messages = _(messagesVal)
@@ -27,6 +25,12 @@ class MessageList extends Component {
 
     this.setState({
       messages: messages
+    });
+  }
+  componentDidMount(){
+    let app = this.props.db.database().ref('member');
+    app.on('value', snapshot => {
+      this.getData(snapshot.val());
     });
   }
   render() {

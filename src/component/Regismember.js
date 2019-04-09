@@ -11,8 +11,9 @@ import {
     Alert,
     FormFeedback
 } from 'reactstrap';
-import axios from 'axios';
+// import axios from 'axios';
 import LoadingScreen from 'react-loading-screen'
+import './regismember.css'
 import logo from './index/logo.png'
 import trim from 'trim';
 class Regismember extends React.Component {
@@ -29,11 +30,11 @@ class Regismember extends React.Component {
             this.state.validated.lname === 'valid' &&
             this.state.validated.email === 'valid') {
 
-            var config = {
-                headers: { 'Access-Control-Allow-Origin': '*' }
-            };
+            // var config = {
+            //     headers: { 'Access-Control-Allow-Origin': '*' }
+            // };
 
-            var url = 'http://127.0.0.1:5000/train/' + name;
+            // var url = 'http://127.0.0.1:5000/train/' + name;
             // this.setState({
             //     status: 2
             // });
@@ -185,9 +186,14 @@ class Regismember extends React.Component {
                     <Alert color="success" isOpen={this.state.visible} toggle={this.onDismiss}>
                         Register new member success
                     </Alert>
+                   
+                    <div className='form-wrap'>
+                    <h1 className="header">
+                        Register new member
+                    </h1>
                     <Form onSubmit={this.addContent}>
-                        <Row form>
-                            <Col md={4}>
+                        <div className='form-row2'>
+                            <Col md={12}>
                                 <FormGroup>
                                     <Label for="name">Name</Label>
                                     <Input
@@ -203,7 +209,7 @@ class Regismember extends React.Component {
 
                                 </FormGroup>
                             </Col>
-                            <Col md={4}>
+                            <Col md={12}>
                                 <FormGroup>
                                     <Label for="lname">LastName</Label>
                                     <Input
@@ -219,7 +225,7 @@ class Regismember extends React.Component {
                                 </FormGroup>
 
                             </Col>
-                            <Col md={4}>
+                            <Col md={12}>
                                 <FormGroup>
                                     <Label for="lname">Email</Label>
                                     <Input
@@ -234,9 +240,14 @@ class Regismember extends React.Component {
                                     <FormFeedback>{this.state.errorMessage.email}</FormFeedback>
                                 </FormGroup>
                             </Col>
-                        </Row>
-                        <Button type="submit" >Submit</Button>
+                            <Col md={12} className="button-submit-wrap">                               
+                                <Button type="submit" className="button-submit">Submit</Button>
+                            </Col>
+                           
+                        </div>
+                        
                     </Form>
+                    </div>
                 </Container>
             )
         }
