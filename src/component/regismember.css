@@ -1,4 +1,4 @@
-@media(min-width:1200px) {
+/* @media(min-width:1200px) { */
     .form-row2 {
         width: 70% !important;
         display: -webkit-flex;
@@ -8,11 +8,22 @@
         margin-right: auto;
         margin-left: auto;
     }
-}
+/* } */
 
+
+@media(max-width:991px){
+    .form-row2{
+        width: 90% !important;
+    }
+    .form-wrap {
+       
+        width: 90%;
+        
+    }
+}
 .header {
     text-align: center;
-    padding-top: 1em;
+    padding: 1em;
 }
 
 .form-wrap {

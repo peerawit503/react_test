@@ -22,7 +22,7 @@ class Regismember extends React.Component {
         e.preventDefault();
         let dbCon = this.props.db.database().ref('/member');
         let name = e.target.name.value;
-        let lname = e.target.name.value;
+        let lname = e.target.lname.value;
         let email = e.target.email.value;
 
 
@@ -64,7 +64,7 @@ class Regismember extends React.Component {
                     lname: "",
                     email: ""
                 }
-    
+
             });
             // axios.post(url, config)
             //     .then(res => {
@@ -79,13 +79,19 @@ class Regismember extends React.Component {
             let validated = { ...this.state.validated }
             let errorMessage = { ...this.state.errorMessage };
             errorMessage.name =
-                name.length < 3 ? "minimum 3 characaters required" : "";
+                /[^a-zA-Z0-9\-\/]/.test(name) ? "Name can't have special character" : "";
+            errorMessage.name =
+                name.length < 3 ? "minimum 3 characaters required" : errorMessage.name;
             validated.name =
-                name.length < 3 ? "invalid" : "valid";
+                name.length < 3 || /[^a-zA-Z0-9\-\/]/.test(name) ? "invalid" : "valid";
+
             errorMessage.lname =
-                lname.length < 3 ? "minimum 3 characaters required" : "";
+                /[^a-zA-Z0-9\-\/]/.test(lname) ? "Lastname can't have special character" : "";
+            errorMessage.lname =
+                lname.length < 3 ? "minimum 3 characaters required" : errorMessage.lname;
             validated.lname =
-                lname.length < 3 ? "invalid" : "valid";
+                lname.length < 3 || /[^a-zA-Z0-9\-\/]/.test(lname) ? "invalid" : "valid";
+
             errorMessage.email =
                 email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i) ? "" : "invalid email address";
             validated.email =
@@ -98,7 +104,7 @@ class Regismember extends React.Component {
         }
 
     }
-    
+
     constructor(props) {
         super(props);
         this.handleChange = this.handleChange.bind(this);
@@ -119,15 +125,19 @@ class Regismember extends React.Component {
             case 'name':
                 errorMessage.name =
                     value.length < 3 ? "minimum 3 characaters required" : "";
+                errorMessage.name =
+                    /[^a-zA-Z0-9\-\/]/.test(value) ? "Name can't have special character" : errorMessage.name;
                 validated.name =
-                    value.length < 3 ? "invalid" : "valid";
+                    value.length < 3 || /[^a-zA-Z0-9\-\/]/.test(value) ? "invalid" : "valid";
                 inputValue.name = value;
                 break;
             case 'lname':
                 errorMessage.lname =
                     value.length < 3 ? "minimum 3 characaters required" : "";
+                errorMessage.lname =
+                    /[^a-zA-Z0-9\-\/]/.test(value) ? "Lastname can't have special character" : errorMessage.lname;
                 validated.lname =
-                    value.length < 3 ? "invalid" : "valid";
+                    value.length < 3 || /[^a-zA-Z0-9\-\/]/.test(value) ? "invalid" : "valid";
                 inputValue.lname = value;
                 break;
             case 'email':
@@ -144,8 +154,8 @@ class Regismember extends React.Component {
         this.setState({
             errorMessage: errorMessage,
             validated: validated,
-            value:inputValue,
-            visible:false
+            value: inputValue,
+            visible: false
         });
 
     }
@@ -186,67 +196,67 @@ class Regismember extends React.Component {
                     <Alert color="success" isOpen={this.state.visible} toggle={this.onDismiss}>
                         Register new member success
                     </Alert>
-                   
+
                     <div className='form-wrap'>
-                    <h1 className="header">
-                        Register new member
+                        <h1 className="header">
+                            Register new member
                     </h1>
-                    <Form onSubmit={this.addContent}>
-                        <div className='form-row2'>
-                            <Col md={12}>
-                                <FormGroup>
-                                    <Label for="name">Name</Label>
-                                    <Input
-                                        valid={this.state.validated.name === 'valid'}
-                                        invalid={this.state.validated.name === 'invalid'}
-                                        type="text"
-                                        name='name'
-                                        value={this.state.value.name}
-                                        placeholder="Name"
-                                        onChange={this.handleChange}
-                                        onBlur={this.handleChange} />
-                                    <FormFeedback>{this.state.errorMessage.name}</FormFeedback>
+                        <Form onSubmit={this.addContent}>
+                            <div className='form-row2'>
+                                <Col md={12}>
+                                    <FormGroup>
+                                        <Label for="name">Name</Label>
+                                        <Input
+                                            valid={this.state.validated.name === 'valid'}
+                                            invalid={this.state.validated.name === 'invalid'}
+                                            type="text"
+                                            name='name'
+                                            value={this.state.value.name}
+                                            placeholder="Name"
+                                            onChange={this.handleChange}
+                                            onBlur={this.handleChange} />
+                                        <FormFeedback>{this.state.errorMessage.name}</FormFeedback>
 
-                                </FormGroup>
-                            </Col>
-                            <Col md={12}>
-                                <FormGroup>
-                                    <Label for="lname">LastName</Label>
-                                    <Input
-                                        valid={this.state.validated.lname === 'valid'}
-                                        invalid={this.state.validated.lname === 'invalid'}
-                                        name='lname'
-                                        type="text"
-                                        value={this.state.value.lname}
-                                        placeholder="LastName"
-                                        onBlur={this.handleChange}
-                                        onChange={this.handleChange} />
-                                    <FormFeedback>{this.state.errorMessage.lname}</FormFeedback>
-                                </FormGroup>
+                                    </FormGroup>
+                                </Col>
+                                <Col md={12}>
+                                    <FormGroup>
+                                        <Label for="lname">LastName</Label>
+                                        <Input
+                                            valid={this.state.validated.lname === 'valid'}
+                                            invalid={this.state.validated.lname === 'invalid'}
+                                            name='lname'
+                                            type="text"
+                                            value={this.state.value.lname}
+                                            placeholder="LastName"
+                                            onBlur={this.handleChange}
+                                            onChange={this.handleChange} />
+                                        <FormFeedback>{this.state.errorMessage.lname}</FormFeedback>
+                                    </FormGroup>
 
-                            </Col>
-                            <Col md={12}>
-                                <FormGroup>
-                                    <Label for="lname">Email</Label>
-                                    <Input
-                                        valid={this.state.validated.email === 'valid'}
-                                        invalid={this.state.validated.email === 'invalid'}
-                                        name='email'
-                                        type="email"
-                                        value={this.state.value.email}
-                                        placeholder="email@example.com"
-                                        onChange={this.handleChange}
-                                        onBlur={this.handleChange} />
-                                    <FormFeedback>{this.state.errorMessage.email}</FormFeedback>
-                                </FormGroup>
-                            </Col>
-                            <Col md={12} className="button-submit-wrap">                               
-                                <Button type="submit" className="button-submit">Submit</Button>
-                            </Col>
-                           
-                        </div>
-                        
-                    </Form>
+                                </Col>
+                                <Col md={12}>
+                                    <FormGroup>
+                                        <Label for="lname">Email</Label>
+                                        <Input
+                                            valid={this.state.validated.email === 'valid'}
+                                            invalid={this.state.validated.email === 'invalid'}
+                                            name='email'
+                                            type="email"
+                                            value={this.state.value.email}
+                                            placeholder="email@example.com"
+                                            onChange={this.handleChange}
+                                            onBlur={this.handleChange} />
+                                        <FormFeedback>{this.state.errorMessage.email}</FormFeedback>
+                                    </FormGroup>
+                                </Col>
+                                <Col md={12} className="button-submit-wrap">
+                                    <Button type="submit" className="button-submit">Submit</Button>
+                                </Col>
+
+                            </div>
+
+                        </Form>
                     </div>
                 </Container>
             )

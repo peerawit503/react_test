@@ -8,6 +8,22 @@ import MemberList from '../MemberList';
 import { Route } from 'react-router-dom'
 import firebase from 'firebase';
 import { withRouter } from 'react-router-dom';
+import { library } from '@fortawesome/fontawesome-svg-core'
+
+import { fas   } from '@fortawesome/free-solid-svg-icons'
+
+library.add(fas)
+function authUser() {
+  return new Promise(function (resolve, reject) {
+     firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+           resolve(user);
+        } else {
+           reject('User not logged in');
+        }             
+     });
+  });
+}
 
 class App extends Component {
 
@@ -25,14 +41,17 @@ class App extends Component {
       email: '',
       password: '',
       currentUser: null,
-      message: ''
+      message: '',
+      isAuthenticating: false
     }
    
     firebase.initializeApp(config);
   }
 
-  componentDidMount() {
-    firebase.auth().onAuthStateChanged(user => {
+  componentWillMount() {
+    
+    authUser().then((user) => {
+     
     if(user){  this.setState({ 
         isAuthenticating: true,
         currentUser: user
@@ -41,6 +60,7 @@ class App extends Component {
       this.setState({ isAuthenticating: true });
       // alert(error);
     });
+    
   }
   componentDidUpdate(){
     if(this.props.location.logout){

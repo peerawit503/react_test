@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Modal } from 'react-bootstrap';
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
     Col,
     Row,
@@ -146,10 +146,10 @@ class Message extends Component {
                             <button
                                 className="button is-danger"
                                 onClick={this.onClickDelete}>
-                                Delete
+                                <FontAwesomeIcon icon="trash-alt" />
                             </button>
                             <button onClick={this.handleShow}>
-                                Edit
+                            <FontAwesomeIcon icon="edit" />
                             </button>
 
 
@@ -225,7 +225,7 @@ class Message extends Component {
                             Close
                         </Button>
                         <Button variant="primary" onClick={this.updateFunction}>
-                            Save Changes
+                            Save Change
                         </Button>
                     </Modal.Footer>
 

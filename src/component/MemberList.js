@@ -29,7 +29,7 @@ class MessageList extends Component {
   }
   componentDidMount(){
     let app = this.props.db.database().ref('member');
-    app.on('value', snapshot => {
+    app.orderByChild("name").equalTo("Joh"+ "\uf8ff").on('value', snapshot => {
       this.getData(snapshot.val());
     });
   }
