@@ -116,7 +116,7 @@ class App extends Component {
         <div>
           <Route path="/" render={(props) => <Navbar {...props} db={firebase} session={this.state.currentUser} />} />
           <Route exact path="/" render={(props) => <Regismember {...props} db={firebase} />} />
-          <Route exact path="/memberlist" render={(props) => <MemberList {...props} db={firebase} />} />
+          <Route exact path="/memberlist" render={(props) => <MemberList  db={firebase} />} />
         </div>
       )
       }else{

@@ -138,11 +138,11 @@ class Message extends Component {
             <>
                 <tbody>
                     <tr>
-                        <th scope="col"></th>
-                        <th scope="col">{this.props.message.name}</th>
-                        <th scope="col">{this.props.message.lname}</th>
-                        <th scope="col">{this.props.message.email}</th>
-                        <th scope="col">
+                       
+                        <th scope="col" className="col-name">{this.props.message.name}</th>
+                        <th scope="col" className="col-lname">{this.props.message.lname}</th>
+                        <th scope="col" className="col-email" >{this.props.message.email}</th>
+                        <th scope="col" className="col-etc">
                             <button
                                 className="button is-danger"
                                 onClick={this.onClickDelete}>

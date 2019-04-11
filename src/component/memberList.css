@@ -1,0 +1,26 @@
+.col-name{
+    table-layout: auto;
+    width: 25%; 
+}
+.col-lname{
+    table-layout: auto;
+    width: 25%; 
+}
+.col-email{
+    table-layout: auto;
+    width: 40%; 
+}
+.col-etc{
+    table-layout: auto;
+    width: 30%; 
+}
+.search-box{
+    width: 30% !important;
+    float: right;
+    margin-bottom: 1em;
+}
+@media(max-width:600px){
+    .col-email{
+        display: none;
+    }
+}

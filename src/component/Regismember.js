@@ -2,7 +2,7 @@ import React from 'react';
 import {
     Container,
     Col,
-    Row,
+
     Button,
     Form,
     FormGroup,
@@ -21,15 +21,19 @@ class Regismember extends React.Component {
     addContent = (e) => {
         e.preventDefault();
         let dbCon = this.props.db.database().ref('/member');
-        let name = e.target.name.value;
-        let lname = e.target.lname.value;
+        let name = trim(e.target.name.value);
+        let lname = trim(e.target.lname.value);
         let email = e.target.email.value;
 
+        let specialChar = /[^a-zA-Z0-9\-\/]/;
+
+        
 
         if (this.state.validated.name === 'valid' &&
             this.state.validated.lname === 'valid' &&
             this.state.validated.email === 'valid') {
-
+            name = name[0].toUpperCase() + name.slice(1);
+            lname = lname[0].toUpperCase() + lname.slice(1);
             // var config = {
             //     headers: { 'Access-Control-Allow-Origin': '*' }
             // };
@@ -79,18 +83,18 @@ class Regismember extends React.Component {
             let validated = { ...this.state.validated }
             let errorMessage = { ...this.state.errorMessage };
             errorMessage.name =
-                /[^a-zA-Z0-9\-\/]/.test(name) ? "Name can't have special character" : "";
+                specialChar.test(name) ? "Name can't have special character" : "";
             errorMessage.name =
                 name.length < 3 ? "minimum 3 characaters required" : errorMessage.name;
             validated.name =
-                name.length < 3 || /[^a-zA-Z0-9\-\/]/.test(name) ? "invalid" : "valid";
+                name.length < 3 || specialChar.test(name) ? "invalid" : "valid";
 
             errorMessage.lname =
-                /[^a-zA-Z0-9\-\/]/.test(lname) ? "Lastname can't have special character" : "";
+                specialChar.test(lname) ? "Lastname can't have special character" : "";
             errorMessage.lname =
                 lname.length < 3 ? "minimum 3 characaters required" : errorMessage.lname;
             validated.lname =
-                lname.length < 3 || /[^a-zA-Z0-9\-\/]/.test(lname) ? "invalid" : "valid";
+                lname.length < 3 || specialChar.test(lname) ? "invalid" : "valid";
 
             errorMessage.email =
                 email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i) ? "" : "invalid email address";
@@ -121,23 +125,24 @@ class Regismember extends React.Component {
         let errorMessage = { ...this.state.errorMessage };
         let validated = { ...this.state.validated }
         let inputValue = { ...this.state.value }
+        let specialChar = /[^a-zA-Z0-9\-\/]/;
         switch (name) {
             case 'name':
                 errorMessage.name =
                     value.length < 3 ? "minimum 3 characaters required" : "";
                 errorMessage.name =
-                    /[^a-zA-Z0-9\-\/]/.test(value) ? "Name can't have special character" : errorMessage.name;
+                    specialChar.test(value) ? "Name can't have special character" : errorMessage.name;
                 validated.name =
-                    value.length < 3 || /[^a-zA-Z0-9\-\/]/.test(value) ? "invalid" : "valid";
+                    value.length < 3 || specialChar.test(value) ? "invalid" : "valid";
                 inputValue.name = value;
                 break;
             case 'lname':
                 errorMessage.lname =
                     value.length < 3 ? "minimum 3 characaters required" : "";
                 errorMessage.lname =
-                    /[^a-zA-Z0-9\-\/]/.test(value) ? "Lastname can't have special character" : errorMessage.lname;
+                    specialChar.test(value) ? "Lastname can't have special character" : errorMessage.lname;
                 validated.lname =
-                    value.length < 3 || /[^a-zA-Z0-9\-\/]/.test(value) ? "invalid" : "valid";
+                    value.length < 3 || specialChar.test(value) ? "invalid" : "valid";
                 inputValue.lname = value;
                 break;
             case 'email':
@@ -200,8 +205,8 @@ class Regismember extends React.Component {
                     <div className='form-wrap'>
                         <h1 className="header">
                             Register new member
-                    </h1>
-                        <Form onSubmit={this.addContent}>
+                        </h1>   
+                            <Form onSubmit={this.addContent}>
                             <div className='form-row2'>
                                 <Col md={12}>
                                     <FormGroup>
