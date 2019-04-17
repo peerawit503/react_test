@@ -1,4 +1,5 @@
 import React from 'react';
+import firebase from 'firebase';
 import {
     Container,
     Col,
@@ -27,13 +28,14 @@ class Regismember extends React.Component {
 
         let specialChar = /[^a-zA-Z0-9\-\/]/;
 
-        
+
 
         if (this.state.validated.name === 'valid' &&
             this.state.validated.lname === 'valid' &&
             this.state.validated.email === 'valid') {
             name = name[0].toUpperCase() + name.slice(1);
             lname = lname[0].toUpperCase() + lname.slice(1);
+         
             // var config = {
             //     headers: { 'Access-Control-Allow-Origin': '*' }
             // };
@@ -47,7 +49,8 @@ class Regismember extends React.Component {
             dbCon.push({
                 name: trim(name),
                 lname: trim(lname),
-                email: email
+                email: email,
+                date: firebase.database.ServerValue.TIMESTAMP
             });
 
             this.setState({
@@ -116,6 +119,17 @@ class Regismember extends React.Component {
 
     }
 
+    getCurrentDate(separator = '') {
+
+        let newDate = new Date()
+        // return newDate ;
+        let date = newDate.getDate();
+        let month = newDate.getMonth() + 1;
+        let year = newDate.getFullYear();
+
+        return `${year}${separator}${month < 10 ? `0${month}` : `${month}`}${separator}${date}`
+    }
+
 
 
     handleChange(event) {
@@ -181,7 +195,7 @@ class Regismember extends React.Component {
                 name: "",
                 lname: "",
                 email: ""
-            },
+            }, 
             value: {
                 name: "",
                 lname: "",
@@ -189,6 +203,7 @@ class Regismember extends React.Component {
             }
 
         });
+        console.log(this.getCurrentDate())
     }
 
 
@@ -205,8 +220,8 @@ class Regismember extends React.Component {
                     <div className='form-wrap'>
                         <h1 className="header">
                             Register new member
-                        </h1>   
-                            <Form onSubmit={this.addContent}>
+                        </h1>
+                        <Form onSubmit={this.addContent}>
                             <div className='form-row2'>
                                 <Col md={12}>
                                     <FormGroup>

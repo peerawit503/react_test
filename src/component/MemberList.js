@@ -63,11 +63,13 @@ class MemberList extends Component {
       || message.lname.toUpperCase().includes(this.state.search.toUpperCase()) 
       || message.email.toUpperCase().includes(this.state.search.toUpperCase()) ) {
         element_count += 1;
-        if(element_count >= 1 && element_count <= 5 ){
+        // if(element_count >= 1 && element_count <= 5 ){
         return (
           <Message message={message} db={this.props.db} key={i} />
         )
-        }
+        // }else {
+        //   return null;
+        // }
       } else {
         return null;
       }

@@ -1,8 +1,9 @@
 import React from 'react';
-import firebase from 'firebase'
-import './navbar.css'
-import logo from './index/logo.png'
-import { Link } from 'react-router-dom'
+import firebase from 'firebase';
+import './navbar.css';
+import logo from './index/logo.png';
+import { NavLink as RRNavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
   Collapse,
   Navbar,
@@ -58,7 +59,7 @@ export default class Example extends React.Component {
       return (
         <div className="nav-bar">
           <Navbar color="light" light expand="md">
-            <NavbarBrand href="/"> <img src={logo} alt="Logo" className="logo" /></NavbarBrand>
+            <NavbarBrand tag={RRNavLink} exact to="/"> <img src={logo} alt="Logo" className="logo" /></NavbarBrand>
             <NavbarToggler onClick={this.toggle} />
             <Collapse isOpen={this.state.isOpen} navbar>
               <Nav className="ml-auto" navbar>

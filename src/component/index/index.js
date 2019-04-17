@@ -158,7 +158,7 @@ class App extends Component {
     
     
                         <div className="form-group">
-                          <button className="btn btn-info btn-md">Submit</button>
+                          <button className="btn btn-info btn-md">Login</button>
                         </div>
     
     
