@@ -50,7 +50,8 @@ class Regismember extends React.Component {
                 name: trim(name),
                 lname: trim(lname),
                 email: email,
-                date: firebase.database.ServerValue.TIMESTAMP
+                createAt: firebase.database.ServerValue.TIMESTAMP,
+                modifyAt: firebase.database.ServerValue.TIMESTAMP
             });
 
             this.setState({
@@ -73,6 +74,7 @@ class Regismember extends React.Component {
                 }
 
             });
+            
             // axios.post(url, config)
             //     .then(res => {
             //         console.log(res);
@@ -203,7 +205,7 @@ class Regismember extends React.Component {
             }
 
         });
-        console.log(this.getCurrentDate())
+        
     }
 
 

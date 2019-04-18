@@ -11,7 +11,7 @@ import {
 
     FormFeedback
 } from 'reactstrap';
-
+import firebase from 'firebase';
 class Message extends Component {
     constructor(props) {
         super(props);
@@ -20,6 +20,11 @@ class Message extends Component {
         this.handleClose = this.handleClose.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.updateFunction = this.updateFunction.bind(this);
+       
+        // let date = this.props.message.date;
+        // var myDate = new Date(date);
+        // console.log(myDate);
+        // let asd =  new Date(date*1000);
         this.state = {
             modalState: false,
             visible: false,
@@ -36,7 +41,9 @@ class Message extends Component {
             value: {
                 name: this.props.message.name,
                 lname: this.props.message.lname,
-                email: this.props.message.email
+                email: this.props.message.email,
+                
+            
             }
         };
     }
@@ -55,7 +62,8 @@ class Message extends Component {
         if (this.state.value.name.length > 2 &&
             this.state.value.lname.length > 2 &&
             this.state.value.email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i)) {
-            var obj = { ...this.state.value };
+            var obj = { ...this.state.value,
+                modifyAt: firebase.database.ServerValue.TIMESTAMP };
 
             let dbCon = this.props.db.database().ref('/member');
             dbCon.child(this.props.message.key).update(obj)
@@ -82,7 +90,8 @@ class Message extends Component {
             value: {
                 name: this.props.message.name,
                 lname: this.props.message.lname,
-                email: this.props.message.email
+                email: this.props.message.email,
+                
             }
         });
     }

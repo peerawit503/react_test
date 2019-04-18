@@ -19,6 +19,9 @@
     float: right;
     margin-bottom: 1em;
 }
+.active-page{
+    color: red !important;
+}
 @media(max-width:600px){
     .col-email{
         display: none;
