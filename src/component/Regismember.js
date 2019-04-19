@@ -12,7 +12,7 @@ import {
     Alert,
     FormFeedback
 } from 'reactstrap';
-// import axios from 'axios';
+import axios from 'axios';
 import LoadingScreen from 'react-loading-screen'
 import './regismember.css'
 import logo from './index/logo.png'
@@ -36,14 +36,14 @@ class Regismember extends React.Component {
             name = name[0].toUpperCase() + name.slice(1);
             lname = lname[0].toUpperCase() + lname.slice(1);
          
-            // var config = {
-            //     headers: { 'Access-Control-Allow-Origin': '*' }
-            // };
+            var config = {
+                headers: { 'Access-Control-Allow-Origin': '*' }
+            };
 
-            // var url = 'http://127.0.0.1:5000/train/' + name;
-            // this.setState({
-            //     status: 2
-            // });
+            var url = 'http://127.0.0.1:5000/add/' + name;
+            this.setState({
+                status: 2
+            });
 
 
             dbCon.push({
@@ -51,11 +51,11 @@ class Regismember extends React.Component {
                 lname: trim(lname),
                 email: email,
                 createAt: firebase.database.ServerValue.TIMESTAMP,
-                modifyAt: firebase.database.ServerValue.TIMESTAMP
+                modifyAt: firebase.database.ServerValue.TIMESTAMP,
+                trained:0
             });
 
             this.setState({
-                status: 1,
                 visible: true,
                 validated: {
                     name: "",
@@ -75,14 +75,29 @@ class Regismember extends React.Component {
 
             });
             
-            // axios.post(url, config)
-            //     .then(res => {
-            //         console.log(res);
-            //         this.setState({
-            //             status: 1,
-            //             visible: true
-            //         });
-            //     })
+            axios.post(url, config)
+                .then(res => {
+                    // console.log(res);
+                    this.setState({
+                        status: 1,
+                        visible: true,
+                        api_res:{
+                            message:'Add new user success',
+                            color:'success'
+                        }
+                    });
+                })
+                .catch(error => {
+                    // console.log(error.response);
+                    this.setState({
+                        status: 1,
+                        api_res:{
+                            message:'Error, fail to add new user',
+                            color:'danger'
+                        }
+                    });
+
+                });
 
         } else {
             let validated = { ...this.state.validated }
@@ -118,6 +133,12 @@ class Regismember extends React.Component {
         super(props);
         this.handleChange = this.handleChange.bind(this);
         this.addContent = this.addContent.bind(this);
+        this.state ={
+            api_res:{
+                message:'',
+                color:''
+            }
+        }
 
     }
 
@@ -215,8 +236,8 @@ class Regismember extends React.Component {
         if (this.state.status === 1) {
             return (
                 <Container>
-                    <Alert color="success" isOpen={this.state.visible} toggle={this.onDismiss}>
-                        Register new member success
+                    <Alert color={this.state.api_res.color} isOpen={this.state.visible} toggle={this.onDismiss}>
+                        {this.state.api_res.message}
                     </Alert>
 
                     <div className='form-wrap'>

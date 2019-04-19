@@ -12,6 +12,7 @@ import {
     FormFeedback
 } from 'reactstrap';
 import firebase from 'firebase';
+import axios from 'axios';
 class Message extends Component {
     constructor(props) {
         super(props);
@@ -52,6 +53,17 @@ class Message extends Component {
         e.preventDefault();
         let dbCon = this.props.db.database().ref('/member');
         dbCon.child(this.props.message.key).remove();
+        // let name = this.state.value.name;
+        let name = this.state.value.name;
+        var config = {
+            headers: { 'Access-Control-Allow-Origin': '*' }
+        };
+
+        var url = 'http://127.0.0.1:5000/delete/' + name;
+        axios.post(url, config)
+            .then(res => {
+                console.log(res);
+            })
 
     }
 
