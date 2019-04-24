@@ -1,18 +1,22 @@
 .col-name{
     table-layout: auto;
-    width: 25%; 
+    width: 20%; 
+}
+.col-status{
+    table-layout: auto;
+    width: 5%; 
 }
 .col-lname{
     table-layout: auto;
-    width: 25%; 
+    width: 20%; 
 }
 .col-email{
     table-layout: auto;
-    width: 40%; 
+    width: 30%; 
 }
 .col-etc{
     table-layout: auto;
-    width: 30%; 
+    width: 25%; 
 }
 .search-box{
     width: 30% !important;

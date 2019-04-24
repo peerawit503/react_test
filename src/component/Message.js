@@ -26,6 +26,7 @@ class Message extends Component {
         // var myDate = new Date(date);
         // console.log(myDate);
         // let asd =  new Date(date*1000);
+    
         this.state = {
             modalState: false,
             visible: false,
@@ -43,8 +44,6 @@ class Message extends Component {
                 name: this.props.message.name,
                 lname: this.props.message.lname,
                 email: this.props.message.email,
-                
-            
             }
         };
     }
@@ -55,11 +54,12 @@ class Message extends Component {
         dbCon.child(this.props.message.key).remove();
         // let name = this.state.value.name;
         let name = this.state.value.name;
+        let lname = this.state.value.lname;
         var config = {
             headers: { 'Access-Control-Allow-Origin': '*' }
         };
 
-        var url = 'http://127.0.0.1:5000/delete/' + name;
+        var url = 'http://127.0.0.1:5000/delete/' + name + '_' + lname;
         axios.post(url, config)
             .then(res => {
                 console.log(res);
@@ -76,7 +76,7 @@ class Message extends Component {
             this.state.value.email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i)) {
             var obj = { ...this.state.value,
                 modifyAt: firebase.database.ServerValue.TIMESTAMP };
-
+           
             let dbCon = this.props.db.database().ref('/member');
             dbCon.child(this.props.message.key).update(obj)
                 .then(() => this.handleClose());
@@ -153,13 +153,14 @@ class Message extends Component {
         });
 
     }
-
+    
     render() {
+        let trained = this.props.message.trained === 0 ? 'untraind' : 'trained' ;
         return (
             <>
                 <tbody>
                     <tr>
-                       
+                        <th scope="col" className="col-status">{trained}</th>
                         <th scope="col" className="col-name">{this.props.message.name}</th>
                         <th scope="col" className="col-lname">{this.props.message.lname}</th>
                         <th scope="col" className="col-email" >{this.props.message.email}</th>
@@ -172,12 +173,8 @@ class Message extends Component {
                             <button onClick={this.handleShow}>
                             <FontAwesomeIcon icon="edit" />
                             </button>
-
-
                         </th>
-
                     </tr>
-
                 </tbody>
 
                 <Modal show={this.state.show} onHide={this.handleClose}>
@@ -196,7 +193,7 @@ class Message extends Component {
                                             type="text"
                                             name='name'
                                             value={this.state.value.name}
-                                            // placeholder="Name"
+                                            placeholder="Name"
                                             onChange={this.handleChange}
                                             onBlur={this.handleChange}
                                         />
@@ -213,7 +210,7 @@ class Message extends Component {
                                             name='lname'
                                             type="text"
                                             value={this.state.value.lname}
-                                            // placeholder="LastName"
+                                            placeholder="LastName"
                                             onBlur={this.handleChange}
                                             onChange={this.handleChange}
                                         />
@@ -230,7 +227,7 @@ class Message extends Component {
                                             name='email'
                                             type="email"
                                             value={this.state.value.email}
-                                            // placeholder="email@example.com"
+                                            placeholder="email@example.com"
                                             onChange={this.handleChange}
                                             onBlur={this.handleChange}
                                         />

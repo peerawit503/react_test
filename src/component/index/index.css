@@ -4,3 +4,6 @@
 body{
     /* background-color: #acbf87 !important; */
 }
+#login-box{
+    max-width: 100% !important;
+}

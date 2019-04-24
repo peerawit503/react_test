@@ -3,7 +3,6 @@ import firebase from 'firebase';
 import {
     Container,
     Col,
-
     Button,
     Form,
     FormGroup,
@@ -25,35 +24,25 @@ class Regismember extends React.Component {
         let name = trim(e.target.name.value);
         let lname = trim(e.target.lname.value);
         let email = e.target.email.value;
-
-        let specialChar = /[^a-zA-Z0-9\-\/]/;
-
-
-
+        let specialChar = /[^a-zA-Z\-\/]/;
         if (this.state.validated.name === 'valid' &&
             this.state.validated.lname === 'valid' &&
             this.state.validated.email === 'valid') {
             name = name[0].toUpperCase() + name.slice(1);
             lname = lname[0].toUpperCase() + lname.slice(1);
-         
+
             var config = {
                 headers: { 'Access-Control-Allow-Origin': '*' }
             };
 
-            var url = 'http://127.0.0.1:5000/add/' + name;
+            var url = 'http://127.0.0.1:5000/add/' + name + '_' + lname;
+
             this.setState({
                 status: 2
             });
 
 
-            dbCon.push({
-                name: trim(name),
-                lname: trim(lname),
-                email: email,
-                createAt: firebase.database.ServerValue.TIMESTAMP,
-                modifyAt: firebase.database.ServerValue.TIMESTAMP,
-                trained:0
-            });
+         
 
             this.setState({
                 visible: true,
@@ -74,26 +63,32 @@ class Regismember extends React.Component {
                 }
 
             });
-            
+
             axios.post(url, config)
                 .then(res => {
-                    // console.log(res);
                     this.setState({
                         status: 1,
                         visible: true,
-                        api_res:{
-                            message:'Add new user success',
-                            color:'success'
+                        api_res: {
+                            message: 'Add new user success',
+                            color: 'success'
                         }
+                    });
+                    dbCon.push({
+                        name: trim(name),
+                        lname: trim(lname),
+                        email: email,
+                        createAt: firebase.database.ServerValue.TIMESTAMP,
+                        modifyAt: firebase.database.ServerValue.TIMESTAMP,
+                        trained: 0
                     });
                 })
                 .catch(error => {
-                    // console.log(error.response);
                     this.setState({
                         status: 1,
-                        api_res:{
-                            message:'Error, fail to add new user',
-                            color:'danger'
+                        api_res: {
+                            message: 'Error, fail to add new user. Server is not available',
+                            color: 'danger'
                         }
                     });
 
@@ -102,24 +97,21 @@ class Regismember extends React.Component {
         } else {
             let validated = { ...this.state.validated }
             let errorMessage = { ...this.state.errorMessage };
-            errorMessage.name =
-                specialChar.test(name) ? "Name can't have special character" : "";
+        
             errorMessage.name =
                 name.length < 3 ? "minimum 3 characaters required" : errorMessage.name;
             validated.name =
                 name.length < 3 || specialChar.test(name) ? "invalid" : "valid";
 
             errorMessage.lname =
-                specialChar.test(lname) ? "Lastname can't have special character" : "";
-            errorMessage.lname =
                 lname.length < 3 ? "minimum 3 characaters required" : errorMessage.lname;
             validated.lname =
                 lname.length < 3 || specialChar.test(lname) ? "invalid" : "valid";
-
-            errorMessage.email =
-                email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i) ? "" : "invalid email address";
+            
+            errorMessage.email  =
+                email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i) ? errorMessage.email : "invalid email address";
             validated.email =
-                email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i) ? "valid" : "invalid";
+                email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i) ? validated.email : "invalid";
 
             this.setState({
                 errorMessage: errorMessage,
@@ -133,10 +125,10 @@ class Regismember extends React.Component {
         super(props);
         this.handleChange = this.handleChange.bind(this);
         this.addContent = this.addContent.bind(this);
-        this.state ={
-            api_res:{
-                message:'',
-                color:''
+        this.state = {
+            api_res: {
+                message: '',
+                color: ''
             }
         }
 
@@ -154,7 +146,6 @@ class Regismember extends React.Component {
     }
 
 
-
     handleChange(event) {
 
         let value = event.target.value;
@@ -162,13 +153,13 @@ class Regismember extends React.Component {
         let errorMessage = { ...this.state.errorMessage };
         let validated = { ...this.state.validated }
         let inputValue = { ...this.state.value }
-        let specialChar = /[^a-zA-Z0-9\-\/]/;
+        let specialChar = /[^a-zA-Z\-\/]/;
         switch (name) {
             case 'name':
                 errorMessage.name =
                     value.length < 3 ? "minimum 3 characaters required" : "";
                 errorMessage.name =
-                    specialChar.test(value) ? "Name can't have special character" : errorMessage.name;
+                    specialChar.test(value) ? "Name can't have special character or number" : errorMessage.name;
                 validated.name =
                     value.length < 3 || specialChar.test(value) ? "invalid" : "valid";
                 inputValue.name = value;
@@ -177,7 +168,7 @@ class Regismember extends React.Component {
                 errorMessage.lname =
                     value.length < 3 ? "minimum 3 characaters required" : "";
                 errorMessage.lname =
-                    specialChar.test(value) ? "Lastname can't have special character" : errorMessage.lname;
+                    specialChar.test(value) ? "Lastname can't have special character or number" : errorMessage.lname;
                 validated.lname =
                     value.length < 3 || specialChar.test(value) ? "invalid" : "valid";
                 inputValue.lname = value;
@@ -188,6 +179,22 @@ class Regismember extends React.Component {
                 validated.email =
                     value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i) ? "valid" : "invalid";
                 inputValue.email = value;
+
+                this.props.db.database().ref().child('member').orderByChild('email').equalTo(value)
+                    .limitToFirst(1).once('child_added', snap => {
+                        if (value === snap.val().email) {
+                            validated.email = 'invalid';
+                            errorMessage.email = value +' already exist';
+
+                            this.setState({
+                                errorMessage: errorMessage,
+                                validated: validated,
+                                value: inputValue,
+                                visible: false
+                            });
+                        }
+                    })
+
                 break;
             default:
                 break;
@@ -206,6 +213,7 @@ class Regismember extends React.Component {
 
 
     componentWillMount() {
+
         this.setState({
             status: 1,
             visible: false,
@@ -218,7 +226,7 @@ class Regismember extends React.Component {
                 name: "",
                 lname: "",
                 email: ""
-            }, 
+            },
             value: {
                 name: "",
                 lname: "",
@@ -226,7 +234,7 @@ class Regismember extends React.Component {
             }
 
         });
-        
+
     }
 
 
