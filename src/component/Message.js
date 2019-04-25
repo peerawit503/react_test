@@ -76,7 +76,6 @@ class Message extends Component {
             this.state.value.email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i)) {
             var obj = { ...this.state.value,
                 modifyAt: firebase.database.ServerValue.TIMESTAMP };
-           
             let dbCon = this.props.db.database().ref('/member');
             dbCon.child(this.props.message.key).update(obj)
                 .then(() => this.handleClose());

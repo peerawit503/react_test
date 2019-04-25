@@ -20,7 +20,7 @@ class Regismember extends React.Component {
 
     addContent = (e) => {
         e.preventDefault();
-        let dbCon = this.props.db.database().ref('/member');
+       
         let name = trim(e.target.name.value);
         let lname = trim(e.target.lname.value);
         let email = e.target.email.value;
@@ -41,47 +41,68 @@ class Regismember extends React.Component {
                 status: 2
             });
 
+            // this.setState({
+            //     visible: true,
+            //     validated: {
+            //         name: "",
+            //         lname: "",
+            //         email: ""
+            //     },
+            //     errorMessage: {
+            //         name: "",
+            //         lname: "",
+            //         email: ""
+            //     },
+            //     value: {
+            //         name: "",
+            //         lname: "",
+            //         email: ""
+            //     }
 
-         
-
-            this.setState({
-                visible: true,
-                validated: {
-                    name: "",
-                    lname: "",
-                    email: ""
-                },
-                errorMessage: {
-                    name: "",
-                    lname: "",
-                    email: ""
-                },
-                value: {
-                    name: "",
-                    lname: "",
-                    email: ""
-                }
-
-            });
+            // });
 
             axios.post(url, config)
                 .then(res => {
-                    this.setState({
-                        status: 1,
-                        visible: true,
-                        api_res: {
-                            message: 'Add new user success',
-                            color: 'success'
-                        }
-                    });
-                    dbCon.push({
-                        name: trim(name),
-                        lname: trim(lname),
-                        email: email,
-                        createAt: firebase.database.ServerValue.TIMESTAMP,
-                        modifyAt: firebase.database.ServerValue.TIMESTAMP,
-                        trained: 0
-                    });
+
+                    var url = 'http://127.0.0.1:5000/file/' + name + '_' + lname;
+
+                    axios.get(url, config)
+                        .then(res => {
+
+                            var data = res.data;
+                            var file_name = '../../preview/' + name + '_' + lname + '/'
+
+                            var table = [];
+                            data.forEach(function (element, i) {
+                                const dddd = file_name + element
+                                table.push(
+
+                                    <img src={dddd} key={i} />
+                                );
+                            });
+                            console.log(table)
+                            this.setState({
+                                status: 3,
+                                preview: table,
+                                api_res: {
+                                    message: 'Add new user success',
+                                    color: 'success'
+                                }
+                            });
+                        })
+                        .catch(error => {
+                            console.log(error)
+                        });
+
+
+                    // dbCon.push({
+                    //     name: trim(name),
+                    //     lname: trim(lname),
+                    //     email: email,
+                    //     createAt: firebase.database.ServerValue.TIMESTAMP,
+                    //     modifyAt: firebase.database.ServerValue.TIMESTAMP,
+                    //     trained: 0
+                    // });
                 })
                 .catch(error => {
                     this.setState({
@@ -97,7 +118,7 @@ class Regismember extends React.Component {
         } else {
             let validated = { ...this.state.validated }
             let errorMessage = { ...this.state.errorMessage };
-        
+
             errorMessage.name =
                 name.length < 3 ? "minimum 3 characaters required" : errorMessage.name;
             validated.name =
@@ -107,8 +128,8 @@ class Regismember extends React.Component {
                 lname.length < 3 ? "minimum 3 characaters required" : errorMessage.lname;
             validated.lname =
                 lname.length < 3 || specialChar.test(lname) ? "invalid" : "valid";
-            
-            errorMessage.email  =
+
+            errorMessage.email =
                 email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i) ? errorMessage.email : "invalid email address";
             validated.email =
                 email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i) ? validated.email : "invalid";
@@ -129,7 +150,8 @@ class Regismember extends React.Component {
             api_res: {
                 message: '',
                 color: ''
-            }
+            },
+            preview: {}
         }
 
     }
@@ -143,6 +165,90 @@ class Regismember extends React.Component {
         let year = newDate.getFullYear();
 
         return `${year}${separator}${month < 10 ? `0${month}` : `${month}`}${separator}${date}`
+    }
+    confirmAdd() {
+        let dbCon = this.props.db.database().ref('/member');
+        let name = this.state.value.name;
+        let lname = this.state.value.lname;
+
+        name = name[0].toUpperCase() + name.slice(1);
+        lname = lname[0].toUpperCase() + lname.slice(1);
+
+        let email = this.state.value.email;
+        var config = {
+            headers: { 'Access-Control-Allow-Origin': '*' }
+        };
+        dbCon.push({
+            name: trim(name),
+            lname: trim(lname),
+            email: email,
+            createAt: firebase.database.ServerValue.TIMESTAMP,
+            modifyAt: firebase.database.ServerValue.TIMESTAMP,
+            trained: 0
+        });
+
+        this.setState({
+            status: 1,
+            api_res: {
+                message: 'Add new member success',
+                color: 'success'
+            }
+        });
+
+        var url = 'http://127.0.0.1:5000/deletePreview/' + name + '_' + lname;
+        axios.post(url, config)
+            .then(res => {
+                console.log(res);
+            })
+        
+
+         this.setState({
+                visible: true,
+                validated: {
+                    name: "",
+                    lname: "",
+                    email: ""
+                },
+                errorMessage: {
+                    name: "",
+                    lname: "",
+                    email: ""
+                },
+                value: {
+                    name: "",
+                    lname: "",
+                    email: ""
+                }
+
+            });
+
+    }
+
+    createImagePreview = () => {
+        // var url = 'http://127.0.0.1:5000/file/test';
+        // let table = []
+        // var config = {
+        //     headers: { 'Access-Control-Allow-Origin': '*' }
+        // };
+        // axios.get(url, config)
+        //     .then(res => {
+        //         var data = res.data
+        //         console.log(data)
+        //         data.forEach(element => {
+        //             table.push( <img src={require('../preview/'+name+'_'+lname+'/' + element)} key='1' />
+        //             );
+        //             this.state.preview = 0
+        //         });
+
+        //     })
+        //     .catch(error => {
+        //         console.log(error)
+        //     });
+
+
+
+
+
     }
 
 
@@ -184,7 +290,7 @@ class Regismember extends React.Component {
                     .limitToFirst(1).once('child_added', snap => {
                         if (value === snap.val().email) {
                             validated.email = 'invalid';
-                            errorMessage.email = value +' already exist';
+                            errorMessage.email = value + ' already exist';
 
                             this.setState({
                                 errorMessage: errorMessage,
@@ -312,7 +418,7 @@ class Regismember extends React.Component {
                 </Container>
             )
         }
-        else {
+        else if (this.state.status === 2) {
             return (
                 <LoadingScreen
                     children='null'
@@ -324,6 +430,18 @@ class Regismember extends React.Component {
                     text='Training'
                 />
             )
+        }
+        else {
+            return (
+                <div>
+
+                    {this.state.preview}
+                    <Button type="submit" className="button-submit" onClick={() => this.confirmAdd()}>OK</Button>
+                    <Button type="submit" className="button-submit">Reset</Button>
+                    <Button type="submit" className="button-submit">Cancle</Button>
+                </div>
+            );
+
         }
 
     }
